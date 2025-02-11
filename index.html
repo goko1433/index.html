@@ -1,0 +1,1047 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>İş Takip Uygulaması</title>
+  <style>
+    /* Genel Sayfa Stilleri */
+    body {
+      font-family: 'Roboto', sans-serif;
+      background: url('ata.jpg') no-repeat center center fixed;
+      background-size: cover;
+      margin: 0;
+      padding: 0;
+      color: #333;
+      transition: background-color 0.5s, color 0.5s;
+    }
+    /* Gece modu için ekstra bir sınıf */
+    .night-mode {
+      background: #000 url('ata.jpg') no-repeat center center fixed;
+      background-size: cover;
+      color: #fff;
+    }
+    /* Gece modunda #app-section'ın arka planını siyah (yarı saydam) yapalım */
+    .night-mode #app-section {
+      background-color: rgba(0, 0, 0, 0.8);
+      color: #fff;
+    }
+
+    /* Gece modunda header ve footer da siyah arka plan + beyaz yazı olsun */
+    .night-mode header {
+      background-color: rgba(0, 0, 0, 0.8);
+      color: #fff;
+    }
+    .night-mode footer {
+      background-color: rgba(0, 0, 0, 0.8);
+      color: #fff;
+    }
+    /* Blinking-green de gece modunda okunur olsun */
+    .night-mode .blinking-green {
+      color: #0f0; /* parlak yeşil */
+    }
+
+    header {
+      background-color: rgba(30, 42, 58, 0.8);
+      color: #fff;
+      text-align: center;
+      padding: 20px;
+      position: relative; /* Gece/Gündüz butonu için konumlandırma */
+    }
+    #logo {
+      font-size: 24px;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+    #login-buttons {
+      margin-top: 10px;
+    }
+    #login-buttons button {
+      padding: 10px 20px;
+      margin: 0 5px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: background-color 0.3s;
+    }
+    #login-buttons button:hover {
+      opacity: 0.9;
+    }
+    #google {
+      background-color: #4285f4;
+      color: #fff;
+    }
+    #tcmb-login {
+      background-color: #34a853;
+      color: #fff;
+    }
+    .blinking-green {
+      color: green;
+      font-weight: bold;
+      animation: blink 1s infinite;
+    }
+    @keyframes blink {
+      0%   { opacity: 1; }
+      50%  { opacity: 0.5; }
+      100% { opacity: 1; }
+    }
+    #app-section {
+      padding: 20px;
+      max-width: 1200px;
+      margin: 0 auto;
+      background-color: rgba(255, 255, 255, 0.8);
+      border-radius: 10px;
+      transition: background-color 0.5s, color 0.5s;
+    }
+    input, select, button {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      box-sizing: border-box;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    button {
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    h3 {
+      margin-top: 30px;
+    }
+    #firm-list {
+      list-style: none;
+      padding: 0;
+    }
+    #firm-list li {
+      background-color: #fff;
+      padding: 10px;
+      margin-bottom: 10px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      transition: background-color 0.3s;
+    }
+    #firm-list li:hover {
+      background-color: #f9f9f9;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    table, th, td {
+      border: 1px solid #ddd;
+    }
+    th, td {
+      padding: 12px;
+      text-align: center;
+    }
+    th {
+      background-color: #f1f1f1;
+    }
+    .edit-btn, .delete-btn {
+      padding: 5px 10px;
+      margin: 0 5px;
+      border-radius: 3px;
+      cursor: pointer;
+    }
+    .edit-btn {
+      background-color: #ffc107;
+      color: #000;
+    }
+    .delete-btn {
+      background-color: #dc3545;
+      color: #fff;
+    }
+    #clear-btn {
+      background-color: #dc3545;
+    }
+    #clear-btn:hover {
+      background-color: #c82333;
+    }
+    footer {
+      background-color: rgba(30, 42, 58, 0.8);
+      color: #fff;
+      text-align: center;
+      padding: 20px;
+      margin-top: 40px;
+    }
+    footer a {
+      color: #fff;
+      text-decoration: none;
+      margin: 0 10px;
+    }
+    footer a:hover {
+      text-decoration: underline;
+    }
+    /* Toast Mesajı: Ortada, yeşil renkli ve animasyonlu */
+    .toast {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: #28a745;
+      background-color: rgba(255, 255, 255, 0.9);
+      padding: 20px 40px;
+      border-radius: 8px;
+      font-size: 24px;
+      font-weight: bold;
+      z-index: 10000;
+      opacity: 0;
+      pointer-events: none;
+      animation: fadeInOut 3s ease-in-out forwards;
+    }
+    @keyframes fadeInOut {
+      0%   { opacity: 0; transform: translate(-50%, -60%); }
+      20%  { opacity: 1; transform: translate(-50%, -50%); }
+      80%  { opacity: 1; transform: translate(-50%, -50%); }
+      100% { opacity: 0; transform: translate(-50%, -40%); }
+    }
+    /* Yükleme Animasyonu */
+    .loader {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      border: 4px solid #f3f3f3;
+      border-top: 4px solid #007bff;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+      display: none;
+      z-index: 1000;
+    }
+    @keyframes spin {
+      0% { transform: translate(-50%, -50%) rotate(0deg); }
+      100% { transform: translate(-50%, -50%) rotate(360deg); }
+    }
+    /* Modal: Firma Detayları */
+    #company-details-modal {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: #fff;
+      border: 2px solid #007bff;
+      border-radius: 8px;
+      padding: 20px;
+      z-index: 2000;
+      display: none;
+      max-width: 90%;
+      max-height: 90%;
+      overflow: auto;
+    }
+    #company-details-modal h3 {
+      margin-top: 0;
+    }
+    #company-details-modal .close-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background-color: #dc3545;
+      color: #fff;
+      border: none;
+      padding: 5px 10px;
+      cursor: pointer;
+    }
+    /* Gece modunda firma detayları modalı da siyah zemin + beyaz yazı olsun */
+    .night-mode #company-details-modal {
+      background: #333;
+      color: #fff;
+      border-color: #fff;
+    }
+    /* Gece modunda tablo başlıkları ve hücreleri de siyah/gri arka plan + beyaz yazı olsun */
+    .night-mode #company-details-modal table th {
+      background-color: #444;
+      color: #fff;
+    }
+    .night-mode #company-details-modal table td {
+      background-color: #333;
+      color: #fff;
+    }
+
+    /* Firma Son Veri Girişi Bölümü */
+    #company-last-entry {
+      margin-top: 20px;
+    }
+    #company-last-entry table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    #company-last-entry th, #company-last-entry td {
+      padding: 10px;
+      border: 1px solid #ddd;
+      text-align: center;
+    }
+    #company-last-entry th {
+      background-color: #f1f1f1;
+    }
+    #company-last-entry a {
+      color: #007bff;
+      cursor: pointer;
+      text-decoration: none;
+    }
+    #company-last-entry a:hover {
+      text-decoration: underline;
+    }
+
+    /* Gece modunda #company-last-entry tablolarını da okunur hale getirelim */
+    .night-mode #company-last-entry th {
+      background-color: #444;
+      color: #fff;
+    }
+    .night-mode #company-last-entry td {
+      background-color: #333;
+      color: #fff;
+    }
+
+    /* Gündüz/Gece Modu Butonu: Küçük kutucuk, güneş/ay simgesi */
+    #mode-toggle-btn {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      width: 40px;
+      height: 40px;
+      background-color: #ff9800;
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      outline: none;
+    }
+    /* Varsayılan olarak güneş simgesi (☀) */
+    #mode-toggle-btn::before {
+      content: "☀";
+      display: block;
+      font-size: 20px;
+      line-height: 38px; /* dikey ortalama */
+      text-align: center;
+      color: #fff;
+    }
+    /* Gece modunda buton koyu arka plan + ay simgesi (🌙) */
+    .night-mode #mode-toggle-btn {
+      background-color: #444;
+    }
+    .night-mode #mode-toggle-btn::before {
+      content: "🌙";
+    }
+    /* Hover efektleri */
+    #mode-toggle-btn:hover {
+      background-color: #e68a00;
+    }
+    .night-mode #mode-toggle-btn:hover {
+      background-color: #555;
+    }
+
+    /* Checkbox (Kutucuk) Alanı */
+    .checkbox-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 10px 0;
+    }
+    /* Her label içine özel bir "checkmark" ekliyoruz */
+    .checkbox-container label {
+      position: relative;
+      cursor: pointer;
+      user-select: none;
+      padding-left: 30px; /* Check kutusu için yer açtık */
+    }
+    /* Asıl checkbox gizlenir */
+    .checkbox-container input[type="checkbox"] {
+      position: absolute;
+      opacity: 0;
+      cursor: pointer;
+      height: 0;
+      width: 0;
+    }
+    /* Görsel check kutusu */
+    .checkmark {
+      position: absolute;
+      left: 0;
+      top: 3px;
+      height: 20px;
+      width: 20px;
+      background-color: #fff;
+      border: 2px solid #ccc;
+      border-radius: 4px;
+      transition: 0.3s;
+    }
+    /* Checkbox seçilince yeşil ve onay tik işareti */
+    .checkbox-container input[type="checkbox"]:checked ~ .checkmark {
+      background-color: green;
+      border-color: green;
+    }
+    .checkmark::after {
+      content: "";
+      position: absolute;
+      display: none;
+    }
+    .checkbox-container input[type="checkbox"]:checked ~ .checkmark:after {
+      display: block;
+    }
+    .checkbox-container .checkmark:after {
+      left: 6px;
+      top: 2px;
+      width: 5px;
+      height: 10px;
+      border: solid #fff;
+      border-width: 0 3px 3px 0;
+      transform: rotate(45deg);
+    }
+
+    /* Yapılan İş Detay Kutucuğu (Modal) */
+    #job-details-modal {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: #fff;
+      border: 2px solid #007bff;
+      border-radius: 8px;
+      padding: 20px;
+      z-index: 3000;
+      display: none;
+      max-width: 90%;
+      max-height: 90%;
+      overflow: auto;
+    }
+    #job-details-modal .close-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background-color: #dc3545;
+      color: #fff;
+      border: none;
+      padding: 5px 10px;
+      cursor: pointer;
+    }
+    .night-mode #job-details-modal {
+      background: #333;
+      color: #fff;
+      border-color: #fff;
+    }
+  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <header>
+    <div id="logo">İstanbul Teknik Lazer Gökberk</div>
+    <div id="login-buttons">
+      <button id="google" onclick="window.open('https://google.com', '_blank')">Google Giriş</button>
+      <button id="tcmb-login" onclick="window.open('https://www.tcmb.gov.tr', '_blank')">TCMB Giriş</button>
+    </div>
+    <div class="blinking-green">Son Veri Girişi</div>
+    <!-- Gündüz/Gece Modu Butonu (küçük kutu) -->
+    <button id="mode-toggle-btn" onclick="toggleMode()"></button>
+  </header>
+
+  <div id="app-section">
+    <!-- Veri Girişi Formu -->
+    <h3>Veri Girişi</h3>
+    <input type="text" id="firm-name" placeholder="Firma İsmi">
+    <input type="text" id="work-description" placeholder="Yapılan İş Açıklaması">
+    <input type="number" id="amount" placeholder="Fiyat" step="0.01">
+    <select id="currency">
+      <option value="TL">TL</option>
+      <option value="USD">USD</option>
+      <option value="EUR">EUR</option>
+    </select>
+    <input type="text" id="program-name" placeholder="Program İsmi">
+
+    <!-- Kutucuklar: lazer kesim, büküm, kaynak, makas -->
+    <div class="checkbox-container">
+      <label>
+        <input type="checkbox" name="islem" value="lazer">
+        <span class="checkmark"></span>
+        Lazer Kesim
+      </label>
+      <label>
+        <input type="checkbox" name="islem" value="bukum">
+        <span class="checkmark"></span>
+        Büküm
+      </label>
+      <label>
+        <input type="checkbox" name="islem" value="kaynak">
+        <span class="checkmark"></span>
+        Kaynak
+      </label>
+      <!-- Dördüncü kutucuk (opsiyonel) -->
+      <label>
+        <input type="checkbox" name="islem" value="makas">
+        <span class="checkmark"></span>
+        Makas
+      </label>
+    </div>
+
+    <!-- Gönderim Butonu: Normalde "Veri Girişi", düzenleme modunda "Güncelle" olarak gösterilecek -->
+    <button id="submit-button" onclick="addData()">Veri Girişi</button>
+    <!-- Verileri Temizle Butonu -->
+    <button id="clear-btn" onclick="verifyPIN()">Verileri Temizle</button>
+    <!-- Verileri Dışa Aktar Butonu -->
+    <button onclick="exportToCSV()">Verileri CSV Olarak Dışa Aktar</button>
+    <!-- Verileri CSV Olarak Yükle Butonu -->
+    <input type="file" id="csv-file-input" accept=".csv" style="display: none;" onchange="importCSV(event)">
+    <button onclick="document.getElementById('csv-file-input').click()">Verileri CSV Olarak Yükle</button>
+
+    <!-- Firma Listesi -->
+    <h3>Firma Listesi</h3>
+    <ul id="firm-list"></ul>
+
+    <!-- Yapılan İşler Tablosu -->
+    <h3>Yapılan İşler</h3>
+    <div>
+      <label for="filter-firm">Firma Filtrele:</label>
+      <input type="text" id="filter-firm" oninput="filterTable()" placeholder="Firma adı girin...">
+      <label for="sort-by">Sırala:</label>
+      <select id="sort-by" onchange="sortTable()">
+        <option value="date">Tarihe Göre</option>
+        <option value="firm">Firmaya Göre</option>
+        <option value="program">Programa Göre</option>
+      </select>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>Tarih</th>
+          <th>Yapılan İş</th>
+          <th>Firma</th>
+          <th>Fiyat</th>
+          <th>Firma Toplam</th>
+          <th>Program</th>
+          <th>İşlemler</th>
+        </tr>
+      </thead>
+      <tbody id="work-table-body"></tbody>
+    </table>
+    
+    <!-- Yeni Eklenen: Firmaların Son Veri Girişi -->
+    <h3>Firmaların Son Veri Girişi</h3>
+    <div id="company-last-entry"></div>
+  </div>
+
+  <footer>
+    <p>© 2023 İstanbul Teknik Lazer Gökberk. Tüm hakları saklıdır.</p>
+    <p>
+      <a href="#">Gizlilik Politikası</a> | 
+      <a href="#">Kullanım Koşulları</a> | 
+      <a href="#">İletişim</a>
+    </p>
+  </footer>
+
+  <!-- Toast Mesajı (Geri Bildirim) -->
+  <div id="toast" class="toast"></div>
+
+  <!-- Yükleme Animasyonu -->
+  <div id="loader" class="loader"></div>
+  
+  <!-- Modal: Firma Detayları -->
+  <div id="company-details-modal">
+    <button class="close-btn" onclick="closeCompanyDetails()">X</button>
+    <div id="company-details-content"></div>
+  </div>
+
+  <!-- Modal: Yapılan İş Detayları -->
+  <div id="job-details-modal">
+    <button class="close-btn" onclick="closeJobDetails()">X</button>
+    <div id="job-details-content"></div>
+  </div>
+
+  <script>
+    // Global Değişkenler
+    let editingIndex = null;
+    let entries = JSON.parse(localStorage.getItem('entries')) || [];
+
+    // Gündüz/Gece Modu Değiştirme (Artık sadece class toggle ile icon değişiyor)
+    function toggleMode() {
+      document.body.classList.toggle('night-mode');
+      // Metin değiştirmiyoruz; simgeyi CSS ile değiştiriyoruz.
+    }
+
+    // Tarihi gg.aa.yyyy formatında döndürür.
+    function formatDate() {
+      const date = new Date();
+      const day = String(date.getDate()).padStart(2, '0');
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const year = date.getFullYear();
+      return `${day}.${month}.${year}`;
+    }
+
+    // dd.mm.yyyy formatındaki tarih string'ini Date objesine çevirir.
+    function parseDate(dateStr) {
+      const parts = dateStr.split('.');
+      return new Date(parts[2], parts[1] - 1, parts[0]);
+    }
+
+    // Toast mesajını ortada, yeşil renkli ve animasyonlu gösterir.
+    function showToast(message) {
+      const toast = document.getElementById('toast');
+      toast.textContent = message;
+      toast.style.animation = 'none';
+      void toast.offsetWidth;
+      toast.style.animation = '';
+      toast.style.opacity = 1;
+      setTimeout(() => {
+        toast.style.opacity = 0;
+      }, 3000);
+    }
+
+    // Yükleme animasyonunu gösterir veya gizler.
+    function showLoader(show) {
+      const loader = document.getElementById('loader');
+      loader.style.display = show ? 'block' : 'none';
+    }
+
+    // Firma toplamlarını güncelle (localStorage kullanılarak)
+    function updateFirmTotals(firmName, amount, currency) {
+      let firmTotals = JSON.parse(localStorage.getItem('firmTotals')) || {};
+      const key = `${firmName}-${currency}`;
+      firmTotals[key] = (firmTotals[key] || 0) + amount;
+      localStorage.setItem('firmTotals', JSON.stringify(firmTotals));
+    }
+
+    // Belirtilen firmanın toplamını getirir.
+    function getFirmTotal(firmName, currency) {
+      const firmTotals = JSON.parse(localStorage.getItem('firmTotals')) || {};
+      const key = `${firmName}-${currency}`;
+      return firmTotals[key] || 0;
+    }
+
+    // Veri girişi (ekleme/düzenleme)
+    function addData() {
+      const firmName = document.getElementById('firm-name').value.trim();
+      const description = document.getElementById('work-description').value.trim();
+      const amount = parseFloat(document.getElementById('amount').value);
+      const currency = document.getElementById('currency').value;
+      const programName = document.getElementById('program-name').value.trim();
+
+      // Seçilen checkbox değerlerini topla
+      const checkboxes = document.querySelectorAll('input[name="islem"]');
+      const selectedIslem = [];
+      checkboxes.forEach(cb => {
+        if (cb.checked) {
+          selectedIslem.push(cb.value);
+        }
+      });
+
+      if (!firmName || !description || isNaN(amount) || amount <= 0 || !programName) {
+        alert("Lütfen tüm alanları geçerli şekilde doldurun.");
+        return;
+      }
+
+      showLoader(true);
+
+      setTimeout(() => {
+        if (editingIndex !== null) {
+          // Düzenleme modunda: Önce eski kaydın etkisini çıkar
+          const oldEntry = entries[editingIndex];
+          updateFirmTotals(oldEntry.firmName, -oldEntry.amount, oldEntry.currency);
+
+          // Yeni veriyi güncelle
+          entries[editingIndex] = {
+            date: formatDate(),
+            firmName,
+            description,
+            amount,
+            currency,
+            programName,
+            islem: selectedIslem
+          };
+          updateFirmTotals(firmName, amount, currency);
+          showToast("Güncellendi!");
+          editingIndex = null;
+
+          // Düzenleme modundan çıkınca buton metnini eski haline getir
+          document.getElementById('submit-button').textContent = "Veri Girişi";
+        } else {
+          // Yeni giriş ekle
+          entries.push({
+            date: formatDate(),
+            firmName,
+            description,
+            amount,
+            currency,
+            programName,
+            islem: selectedIslem
+          });
+          updateFirmTotals(firmName, amount, currency);
+          showToast("Başarıyla Kaydedildi!");
+        }
+        localStorage.setItem('entries', JSON.stringify(entries));
+        loadEntries();
+        loadFirms();
+        loadCompanyLastEntry();
+        clearForm();
+        showLoader(false);
+      }, 1000);
+    }
+
+    // Girişi siler.
+    function deleteEntry(index) {
+      const entry = entries[index];
+      entries.splice(index, 1);
+      localStorage.setItem('entries', JSON.stringify(entries));
+      updateFirmTotals(entry.firmName, -entry.amount, entry.currency);
+      loadEntries();
+      loadFirms();
+      loadCompanyLastEntry();
+      showToast("Başarıyla Silindi!");
+    }
+
+    // Girişin düzenlenmesi: Form alanlarını doldurur ve gönderim butonunu "Güncelle" yapar.
+    function editEntry(index) {
+      editingIndex = index;
+      const entry = entries[index];
+      document.getElementById('firm-name').value = entry.firmName;
+      document.getElementById('work-description').value = entry.description;
+      document.getElementById('amount').value = entry.amount;
+      document.getElementById('currency').value = entry.currency;
+      document.getElementById('program-name').value = entry.programName;
+
+      // Daha önce seçili olan kutucukları işaretle
+      const checkboxes = document.querySelectorAll('input[name="islem"]');
+      checkboxes.forEach(cb => {
+        cb.checked = entry.islem && entry.islem.includes(cb.value);
+      });
+
+      // Buton metnini güncelleme moduna geçir
+      document.getElementById('submit-button').textContent = "Güncelle";
+    }
+
+    // Formu temizler ve gönderim butonunu varsayılan hale getirir.
+    function clearForm() {
+      document.getElementById('firm-name').value = '';
+      document.getElementById('work-description').value = '';
+      document.getElementById('amount').value = '';
+      document.getElementById('program-name').value = '';
+
+      // Check kutucuklarını sıfırla
+      const checkboxes = document.querySelectorAll('input[name="islem"]');
+      checkboxes.forEach(cb => cb.checked = false);
+
+      // Varsayılan buton metni
+      document.getElementById('submit-button').textContent = "Veri Girişi";
+    }
+
+    // Tabloya kayıtları yükler.
+    function loadEntries() {
+      const tableBody = document.getElementById('work-table-body');
+      tableBody.innerHTML = "";
+      entries.forEach((entry, index) => {
+        const row = tableBody.insertRow();
+        const dateCell = row.insertCell();
+        const descCell = row.insertCell();
+        const firmCell = row.insertCell();
+        const amountCell = row.insertCell();
+        const firmTotalCell = row.insertCell();
+        const programCell = row.insertCell();
+        const actionsCell = row.insertCell();
+
+        dateCell.textContent = entry.date;
+
+        // İş açıklamasına, seçilen kutucukları ekle
+        let islemText = "";
+        if (entry.islem && entry.islem.length > 0) {
+          islemText = ` (Seçilen: ${entry.islem.join(', ')})`;
+        }
+        descCell.textContent = entry.description + islemText;
+
+        // Yeni eklenen: descCell'e tıklayınca detay kutucuğu açılsın
+        descCell.style.cursor = "pointer";
+        descCell.onclick = () => showJobDetails(entry);
+
+        firmCell.textContent = entry.firmName;
+        amountCell.textContent = `${entry.amount} ${entry.currency}`;
+        firmTotalCell.textContent = `${getFirmTotal(entry.firmName, entry.currency)} ${entry.currency}`;
+        programCell.textContent = entry.programName;
+
+        // İşlemler: Düzenle ve Sil butonları
+        const editBtn = document.createElement('button');
+        editBtn.textContent = "Düzenle";
+        editBtn.className = "edit-btn";
+        editBtn.onclick = () => editEntry(index);
+
+        const deleteBtn = document.createElement('button');
+        deleteBtn.textContent = "Sil";
+        deleteBtn.className = "delete-btn";
+        deleteBtn.onclick = () => deleteEntry(index);
+
+        actionsCell.appendChild(editBtn);
+        actionsCell.appendChild(deleteBtn);
+      });
+    }
+
+    // Firma listesini günceller.
+    function loadFirms() {
+      const firmListEl = document.getElementById('firm-list');
+      firmListEl.innerHTML = "";
+      const firms = getUniqueFirms();
+      firms.forEach(firm => {
+        const li = document.createElement('li');
+        li.textContent = firm;
+        firmListEl.appendChild(li);
+      });
+    }
+
+    // Benzersiz firma isimlerini döndürür.
+    function getUniqueFirms() {
+      const firms = new Set();
+      entries.forEach(entry => firms.add(entry.firmName));
+      return Array.from(firms);
+    }
+
+    // Tabloyu, girilen firma adına göre filtreler.
+    function filterTable() {
+      const filterText = document.getElementById('filter-firm').value.toLowerCase();
+      const tableRows = document.getElementById('work-table-body').rows;
+      for (let row of tableRows) {
+        const firmName = row.cells[2].textContent.toLowerCase();
+        row.style.display = firmName.includes(filterText) ? "" : "none";
+      }
+    }
+
+    // Seçilen kritere göre kayıtları sıralar.
+    function sortTable() {
+      const sortBy = document.getElementById('sort-by').value;
+      entries.sort((a, b) => {
+        if (sortBy === "date") {
+          const dateA = new Date(a.date.split('.').reverse().join('-'));
+          const dateB = new Date(b.date.split('.').reverse().join('-'));
+          return dateA - dateB;
+        } else if (sortBy === "firm") {
+          return a.firmName.localeCompare(b.firmName);
+        } else if (sortBy === "program") {
+          return a.programName.localeCompare(b.programName);
+        }
+      });
+      localStorage.setItem('entries', JSON.stringify(entries));
+      loadEntries();
+    }
+
+    // CSV Olarak dışa aktarır.
+    function exportToCSV() {
+      if (entries.length === 0) {
+        alert("Dışa aktarılacak veri yok.");
+        return;
+      }
+      let csvContent = "data:text/csv;charset=utf-8,";
+      csvContent += "Tarih,Yapılan İş,Firma,Fiyat,Para Birimi,Program,Seçilen İşlemler\n";
+      entries.forEach(entry => {
+        const islemList = entry.islem ? entry.islem.join('|') : ""; 
+        csvContent += `${entry.date},${entry.description},${entry.firmName},${entry.amount},${entry.currency},${entry.programName},${islemList}\n`;
+      });
+      const encodedUri = encodeURI(csvContent);
+      const link = document.createElement("a");
+      link.setAttribute("href", encodedUri);
+      link.setAttribute("download", "veriler.csv");
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+
+    // CSV dosyasını içe aktarır.
+    function importCSV(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const text = e.target.result;
+        const lines = text.trim().split("\n");
+        const newEntries = [];
+        for (let i = 1; i < lines.length; i++) {
+          const cols = lines[i].split(",");
+          if (cols.length < 7) continue; 
+          const [date, description, firmName, amount, currency, programName, islemList] = cols;
+          const parsedIslem = islemList ? islemList.split('|') : [];
+          newEntries.push({
+            date: date.trim(),
+            description: description.trim(),
+            firmName: firmName.trim(),
+            amount: parseFloat(amount),
+            currency: currency.trim(),
+            programName: programName.trim(),
+            islem: parsedIslem
+          });
+        }
+        entries = newEntries;
+        localStorage.setItem('entries', JSON.stringify(entries));
+        loadEntries();
+        loadFirms();
+        loadCompanyLastEntry();
+        showToast("CSV başarıyla yüklendi!");
+      }
+      reader.readAsText(file);
+    }
+
+    // Verileri temizlemek için PIN doğrulaması yapar.
+    function verifyPIN() {
+      const pin = prompt("Verileri temizlemek için PIN giriniz:");
+      if (pin === "1234") {
+        entries = [];
+        localStorage.removeItem('entries');
+        localStorage.removeItem('firmTotals');
+        loadEntries();
+        loadFirms();
+        loadCompanyLastEntry();
+        showToast("Veriler temizlendi!");
+      } else {
+        alert("Yanlış PIN!");
+      }
+    }
+
+    // Firma için son veri giriş tarihini döndürür.
+    function getLatestEntryDate(firmName) {
+      let latest = null;
+      entries.forEach(entry => {
+        if (entry.firmName === firmName) {
+          const entryDate = parseDate(entry.date);
+          if (!latest || entryDate > latest) {
+            latest = entryDate;
+          }
+        }
+      });
+      return latest;
+    }
+
+    // Firma son veri girişlerini listeleyen bölümü yükler.
+    function loadCompanyLastEntry() {
+      const container = document.getElementById('company-last-entry');
+      container.innerHTML = "";
+      const firms = getUniqueFirms();
+      if (firms.length === 0) {
+        container.innerHTML = "<p>Henüz firma verisi yok.</p>";
+        return;
+      }
+      const table = document.createElement("table");
+      const thead = document.createElement("thead");
+      const headerRow = document.createElement("tr");
+      const thFirm = document.createElement("th");
+      thFirm.textContent = "Firma";
+      const thLastEntry = document.createElement("th");
+      thLastEntry.textContent = "Son Veri Girişi";
+      headerRow.appendChild(thFirm);
+      headerRow.appendChild(thLastEntry);
+      thead.appendChild(headerRow);
+      table.appendChild(thead);
+      const tbody = document.createElement("tbody");
+      firms.forEach(firm => {
+        const tr = document.createElement("tr");
+        const tdFirm = document.createElement("td");
+        const firmLink = document.createElement("a");
+        firmLink.textContent = firm;
+        firmLink.onclick = () => showCompanyDetails(firm);
+        tdFirm.appendChild(firmLink);
+        const tdLastEntry = document.createElement("td");
+        const latestDate = getLatestEntryDate(firm);
+        tdLastEntry.textContent = latestDate ? latestDate.toLocaleDateString("tr-TR") : "Yok";
+        tr.appendChild(tdFirm);
+        tr.appendChild(tdLastEntry);
+        tbody.appendChild(tr);
+      });
+      table.appendChild(tbody);
+      container.appendChild(table);
+    }
+
+    // Firma detaylarını gösterir (modal açar).
+    function showCompanyDetails(firmName) {
+      // Seçilen firmanın tüm verilerini filtrele
+      const firmEntries = entries.filter(entry => entry.firmName === firmName);
+      if (firmEntries.length === 0) return;
+
+      // Her para birimi için toplam hesapla
+      let totalTL = 0, totalUSD = 0, totalEUR = 0;
+      firmEntries.forEach(entry => {
+        if (entry.currency === "TL") totalTL += entry.amount;
+        else if (entry.currency === "USD") totalUSD += entry.amount;
+        else if (entry.currency === "EUR") totalEUR += entry.amount;
+      });
+
+      // Son veri girişi tarihi
+      const latestDate = getLatestEntryDate(firmName);
+      const latestDateStr = latestDate ? latestDate.toLocaleDateString("tr-TR") : "Yok";
+
+      // Veri girişlerinin aylara göre dağılımı (her ay kaç giriş yapılmış)
+      const monthlyData = {};
+      firmEntries.forEach(entry => {
+        const date = parseDate(entry.date);
+        const monthYear = `${date.getFullYear()}-${(date.getMonth()+1).toString().padStart(2, '0')}`;
+        if (!monthlyData[monthYear]) {
+          monthlyData[monthYear] = 0;
+        }
+        monthlyData[monthYear]++;
+      });
+
+      // Modal içeriğini oluştur
+      const modalContent = document.getElementById('company-details-content');
+      modalContent.innerHTML = `<h3>${firmName} Detayları</h3>
+        <p><strong>Toplam İş Tutarı:</strong> TL: ${totalTL.toFixed(2)}, USD: ${totalUSD.toFixed(2)}, EUR: ${totalEUR.toFixed(2)}</p>
+        <p><strong>Son Veri Girişi:</strong> ${latestDateStr}</p>
+        <p><strong>Veri Girişi Yapılmadığı Süre:</strong> ${latestDate ? Math.floor((new Date() - latestDate) / (1000 * 60 * 60 * 24)) : "0"} gün</p>
+        <h4>Aylara Göre Veri Girişi</h4>
+        <table>
+          <thead>
+            <tr>
+              <th>Ay</th>
+              <th>Giriş Sayısı</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${
+              Object.entries(monthlyData)
+                .map(([month, count]) => `<tr><td>${month}</td><td>${count}</td></tr>`)
+                .join('')
+            }
+          </tbody>
+        </table>
+      `;
+      // Modalı göster
+      document.getElementById('company-details-modal').style.display = 'block';
+    }
+
+    // Modalı kapatır.
+    function closeCompanyDetails() {
+      document.getElementById('company-details-modal').style.display = 'none';
+    }
+
+    // Yapılan İş Detay Kutucuğu (modal) göster
+    function showJobDetails(entry) {
+      const modal = document.getElementById('job-details-modal');
+      const content = document.getElementById('job-details-content');
+
+      // Seçili işlemler metni
+      let islemText = "Seçilen işlem yok";
+      if (entry.islem && entry.islem.length > 0) {
+        islemText = entry.islem.join(', ');
+      }
+
+      content.innerHTML = `
+        <h3>İş Detayı</h3>
+        <p><strong>Tarih:</strong> ${entry.date}</p>
+        <p><strong>Açıklama:</strong> ${entry.description}</p>
+        <p><strong>Seçili Kutucuklar:</strong> ${islemText}</p>
+      `;
+
+      modal.style.display = 'block';
+    }
+
+    // Yapılan İş Detay Kutucuğu (modal) kapat
+    function closeJobDetails() {
+      document.getElementById('job-details-modal').style.display = 'none';
+    }
+
+    // Sayfa yüklendiğinde kayıtları yükler.
+    window.onload = function() {
+      loadEntries();
+      loadFirms();
+      loadCompanyLastEntry();
+    };
+  </script>
+</body>
+</html>
