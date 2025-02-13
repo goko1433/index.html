@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>İş Takip Uygulaması</title>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet" />
   <style>
     /* Genel Stil */
     body {
@@ -25,7 +25,8 @@
       background-color: rgba(0, 0, 0, 0.8);
       color: #fff;
     }
-    .night-mode header, .night-mode footer {
+    .night-mode header,
+    .night-mode footer {
       background-color: rgba(0, 0, 0, 0.8);
       color: #fff;
     }
@@ -103,11 +104,10 @@
     button:hover {
       background-color: #0056b3;
     }
-    /* Diğer Yazılar Daha Belirgin (Başlık, etiket vb.) */
     h3, h4, p, label {
       font-weight: 600;
     }
-    /* Yeni: Tarih ve Program Arama Filtreleri */
+    /* Arama Filtreleri */
     #search-filters {
       margin-bottom: 20px;
     }
@@ -119,10 +119,12 @@
       margin-right: 15px;
       max-width: 200px;
     }
-    /* Firma Listesi */
+    /* Firma Listesi (dikey kaydırma) */
     #firm-list {
       list-style: none;
       padding: 0;
+      max-height: 200px;
+      overflow-y: auto;
     }
     #firm-list li {
       background-color: #fff;
@@ -135,7 +137,6 @@
     #firm-list li:hover {
       background-color: #f9f9f9;
     }
-    /* Tıklanabilir Firma İsimleri: mavi renk, kalın */
     .firm-link {
       color: blue;
       font-weight: bold;
@@ -193,7 +194,7 @@
     footer a:hover {
       text-decoration: underline;
     }
-    /* Toast Mesajı: Sağ Üst Köşe */
+    /* Toast Mesajı */
     .toast {
       position: fixed;
       top: 20px;
@@ -209,7 +210,7 @@
       pointer-events: none;
       transition: opacity 0.5s ease-in-out;
     }
-    /* Loader Animasyonu */
+    /* Loader */
     .loader {
       position: fixed;
       top: 50%;
@@ -228,7 +229,7 @@
       0% { transform: translate(-50%, -50%) rotate(0deg); }
       100% { transform: translate(-50%, -50%) rotate(360deg); }
     }
-    /* Modal Stilleri */
+    /* Modal */
     #company-details-modal,
     #job-details-modal {
       position: fixed;
@@ -276,12 +277,17 @@
       background-color: #333;
       color: #fff;
     }
-    /* Firma Son Veri Girişi */  
+    /* Firma Son Veri Girişi (dikey kaydırma) */
+    #company-last-entry-container {
+      max-height: 300px;
+      overflow-y: auto;
+    }
     #company-last-entry table {
       width: 100%;
       border-collapse: collapse;
     }
-    #company-last-entry th, #company-last-entry td {
+    #company-last-entry th,
+    #company-last-entry td {
       padding: 10px;
       border: 1px solid #ddd;
       text-align: center;
@@ -331,7 +337,7 @@
     .night-mode #mode-toggle-btn:hover {
       background-color: #555;
     }
-    /* Checkbox Stilleri */
+    /* Checkbox */
     .checkbox-container {
       display: flex;
       flex-wrap: wrap;
@@ -383,14 +389,14 @@
       border-width: 0 3px 3px 0;
       transform: rotate(45deg);
     }
-    /* Toplam Tutarlar Alanı */
+    /* Toplam Tutarlar */
     #total-amounts {
       background: #f1f1f1;
       padding: 10px;
       border-radius: 5px;
       margin-top: 20px;
     }
-    /* Export Butonu: "Verileri Dışarı Aktar Kaydet" - yeşil, yanıp sönen */
+    /* Dışa Aktarma Butonu */
     #export-button {
       background-color: transparent;
       border: 2px solid green;
@@ -404,7 +410,7 @@
       color: green;
       font-weight: bold;
     }
-    /* Kullanıcı Onay Modalı (Ortalanmış: "Emin misiniz?" yazısı, Onayla ve İptal butonları) */
+    /* Onay Modalı */
     #confirmation-modal {
       position: fixed;
       top: 0;
@@ -428,7 +434,6 @@
       font-weight: bold;
       margin-bottom: 20px;
     }
-    /* Onayla ve İptal butonlarının düzenlenmesi */
     #confirm-yes {
       background-color: green;
       color: #fff;
@@ -447,6 +452,51 @@
       margin: 5px;
       cursor: pointer;
     }
+    /* Grafik Kapsayıcısı (yatay kaydırma) */
+    #firm-performance-container {
+      overflow-x: auto;
+    }
+    /* Grafiğin min. genişliği */
+    #firm-performance-chart {
+      min-width: 600px;
+    }
+    /* Grafik altındaki firma kutucukları: sadece firma adı ve yıldız (veriler gösterilmez) */
+    .currency-totals {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .currency-box {
+      background-color: #f9f9f9;
+      border: 1px solid #ccc;
+      padding: 10px;
+      border-radius: 5px;
+      min-width: 100px;
+      text-align: center;
+      font-size: 14px;
+      color: green;
+      font-weight: bold;
+    }
+    /* Yapılan İşler Tablosu için dikey kaydırma */
+    #work-table-container {
+      max-height: 300px;
+      overflow-y: auto;
+      margin-top: 10px;
+    }
+    /* Yıldız Animasyonu: Daha belirgin yanıp sönen altın yıldız */
+    .star-blink {
+      display: inline-block;
+      font-size: 20px;
+      color: gold;
+      margin-left: 4px;
+      animation: starBlink 0.5s infinite alternate;
+    }
+    @keyframes starBlink {
+      from { transform: scale(1); }
+      to   { transform: scale(1.6); }
+    }
   </style>
 </head>
 <body>
@@ -463,92 +513,84 @@
   <div id="app-section">
     <!-- Veri Girişi Formu -->
     <h3>Veri Girişi</h3>
-    <input type="text" id="firm-name" placeholder="Firma İsmi">
-    <input type="text" id="work-description" placeholder="Yapılan İş Açıklaması">
-    <input type="number" id="amount" placeholder="Fiyat" step="0.01">
+    <input type="text" id="firm-name" placeholder="Firma İsmi" />
+    <input type="text" id="work-description" placeholder="Yapılan İş Açıklaması" />
+    <input type="number" id="amount" placeholder="Fiyat" step="0.01" />
     <select id="currency">
       <option value="TL">TL</option>
       <option value="USD">USD</option>
       <option value="EUR">EUR</option>
     </select>
-    <input type="text" id="program-name" placeholder="Program İsmi">
-    
+    <input type="text" id="program-name" placeholder="Program İsmi" />
+
     <!-- İşlem Kutucukları -->
     <div class="checkbox-container">
       <label>
-        <input type="checkbox" name="islem" value="lazer">
-        <span class="checkmark"></span>
-        Lazer Kesim
+        <input type="checkbox" name="islem" value="lazer" />
+        <span class="checkmark"></span> Lazer Kesim
       </label>
       <label>
-        <input type="checkbox" name="islem" value="bukum">
-        <span class="checkmark"></span>
-        Büküm
+        <input type="checkbox" name="islem" value="bukum" />
+        <span class="checkmark"></span> Büküm
       </label>
       <label>
-        <input type="checkbox" name="islem" value="kaynak">
-        <span class="checkmark"></span>
-        Kaynak
+        <input type="checkbox" name="islem" value="kaynak" />
+        <span class="checkmark"></span> Kaynak
       </label>
       <label>
-        <input type="checkbox" name="islem" value="makas">
-        <span class="checkmark"></span>
-        Makas
+        <input type="checkbox" name="islem" value="makas" />
+        <span class="checkmark"></span> Makas
       </label>
     </div>
-    
+
     <button id="submit-button" onclick="addData()">Veri Girişi</button>
     <button id="clear-btn" onclick="verifyPIN()">Verileri Temizle</button>
-    <button id="export-button" onclick="exportToCSV()"><span class="blink-text">Verileri Dışarı Aktar Kaydet</span></button>
-    <input type="file" id="csv-file-input" accept=".csv" style="display: none;" onchange="importCSV(event)">
+    <button id="export-button" onclick="exportToCSV()">
+      <span class="blink-text">Verileri Dışarı Aktar Kaydet</span>
+    </button>
+    <input type="file" id="csv-file-input" accept=".csv" style="display: none;" onchange="importCSV(event)" />
     <button onclick="document.getElementById('csv-file-input').click()">Verileri CSV Olarak Yükle</button>
-    
-    <!-- Firma Listesi -->
+
+    <!-- Firma Listesi (dikey kaydırmalı) -->
     <h3>Firma Listesi</h3>
     <ul id="firm-list"></ul>
-    
-    <!-- Tarih ve Program Arama Filtreleri -->
+
+    <!-- Arama Filtreleri -->
     <div id="search-filters">
       <label>Başlangıç Tarihi:</label>
-      <input type="date" id="search-start-date" onchange="filterTable()">
+      <input type="date" id="search-start-date" onchange="filterTable()" />
       <label>Bitiş Tarihi:</label>
-      <input type="date" id="search-end-date" onchange="filterTable()">
+      <input type="date" id="search-end-date" onchange="filterTable()" />
       <label>Program Adı:</label>
-      <input type="text" id="search-program" oninput="filterTable()" placeholder="Program adı girin...">
+      <input type="text" id="search-program" oninput="filterTable()" placeholder="Program adı girin..." />
     </div>
-    
-    <!-- Yapılan İşler Tablosu -->
+
+    <!-- Yapılan İşler Tablosu (dikey kaydırmalı) -->
     <h3>Yapılan İşler</h3>
-    <div>
-      <label for="filter-firm">Firma Filtrele:</label>
-      <input type="text" id="filter-firm" oninput="filterTable()" placeholder="Firma adı girin...">
-      <label for="sort-by">Sırala:</label>
-      <select id="sort-by" onchange="sortTable()">
-        <option value="date">Tarihe Göre</option>
-        <option value="firm">Firmaya Göre</option>
-        <option value="program">Programa Göre</option>
-      </select>
+    <div id="work-table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Tarih</th>
+            <th>Yapılan İş</th>
+            <th>Firma</th>
+            <th>Fiyat</th>
+            <th>Firma Toplam</th>
+            <th>Program</th>
+            <th>Muhasebeye Verildi</th>
+            <th>İşlemler</th>
+          </tr>
+        </thead>
+        <tbody id="work-table-body"></tbody>
+      </table>
     </div>
-    <table>
-      <thead>
-        <tr>
-          <th>Tarih</th>
-          <th>Yapılan İş</th>
-          <th>Firma</th>
-          <th>Fiyat</th>
-          <th>Firma Toplam</th>
-          <th>Program</th>
-          <th>Muhasebeye Verildi</th>
-          <th>İşlemler</th>
-        </tr>
-      </thead>
-      <tbody id="work-table-body"></tbody>
-    </table>
-    
-    <!-- Firmaların Son Veri Girişi -->
+
+    <!-- Firmaların Son Veri Girişi (dikey kaydırmalı) -->
     <h3>Firmaların Son Veri Girişi</h3>
-    <div id="company-last-entry"></div>
-    
+    <div id="company-last-entry-container">
+      <div id="company-last-entry"></div>
+    </div>
+
     <!-- Toplam Tutarlar -->
     <div id="total-amounts">
       <h3>Toplam Tutarlar</h3>
@@ -556,36 +598,44 @@
       <p style="color: green;">TL: <span id="total-tl">0</span></p>
       <p style="color: green;">EUR: <span id="total-eur">0</span></p>
     </div>
+
+    <!-- Firmalara Göre İş Performansı Grafiği (yatay kaydırmalı) -->
+    <h3>Firmalara Göre İş Performansı</h3>
+    <div id="firm-performance-container">
+      <canvas id="firm-performance-chart"></canvas>
+    </div>
+    <!-- Grafik altındaki firma kutucukları: sadece firma adı ve eğer en yüksekse yıldız -->
+    <div id="currency-totals" class="currency-totals"></div>
   </div>
 
   <footer>
     <p>© 2023 İstanbul Teknik Lazer Gökberk. Tüm hakları saklıdır.</p>
     <p>
-      <a href="#">Gizlilik Politikası</a> | 
-      <a href="#">Kullanım Koşulları</a> | 
+      <a href="#">Gizlilik Politikası</a> |
+      <a href="#">Kullanım Koşulları</a> |
       <a href="#">İletişim</a>
     </p>
   </footer>
-  
-  <!-- Toast Mesajı (Sağ Üst Köşe) -->
+
+  <!-- Toast -->
   <div id="toast" class="toast"></div>
-  
+
   <!-- Loader -->
   <div id="loader" class="loader"></div>
-  
+
   <!-- Firma Detayları Modalı -->
   <div id="company-details-modal">
     <button class="close-btn" onclick="closeCompanyDetails()">X</button>
     <div id="company-details-content"></div>
   </div>
-  
+
   <!-- İş Detayları Modalı -->
   <div id="job-details-modal">
     <button class="close-btn" onclick="closeJobDetails()">X</button>
     <div id="job-details-content"></div>
   </div>
-  
-  <!-- Kullanıcı Onay Modalı (Ortalanmış: "Emin misiniz?" yazısı, Onayla ve İptal butonları) -->
+
+  <!-- Onay Modalı -->
   <div id="confirmation-modal">
     <div class="modal-content">
       <p id="confirmation-message">Emin misiniz?</p>
@@ -593,20 +643,34 @@
       <button id="confirm-no">İptal</button>
     </div>
   </div>
-  
+
   <script>
-    // Global Değişkenler
+    /*********************************************************
+     *  1) Global Değişkenler ve Ayarlar
+     *********************************************************/
     let editingIndex = null;
     let entries = JSON.parse(localStorage.getItem('entries')) || [];
     let pendingAction = null;
     let pendingIndex = null;
-    
-    // Gündüz/Gece Modu
+
+    // Döviz dönüşüm oranlarını kullanıcıya göstermiyoruz;
+    // bunlar yalnızca sıralama için arka planda kullanılacak.
+    const conversionRates = {
+      TL: 1,
+      USD: 27,
+      EUR: 29
+    };
+
+    /*********************************************************
+     *  2) Gündüz/Gece Modu
+     *********************************************************/
     function toggleMode() {
       document.body.classList.toggle('night-mode');
     }
-    
-    // Tarih Formatlama
+
+    /*********************************************************
+     *  3) Tarih Formatlama
+     *********************************************************/
     function formatDate() {
       const date = new Date();
       const day = String(date.getDate()).padStart(2, '0');
@@ -614,13 +678,15 @@
       const year = date.getFullYear();
       return `${day}.${month}.${year}`;
     }
-    
+
     function parseDate(dateStr) {
       const parts = dateStr.split('.');
       return new Date(parts[2], parts[1] - 1, parts[0]);
     }
-    
-    // Toast Mesajı (Sağ Üst Köşe)
+
+    /*********************************************************
+     *  4) Toast Mesajı
+     *********************************************************/
     function showToast(message) {
       const toast = document.getElementById('toast');
       toast.textContent = message;
@@ -628,26 +694,43 @@
       void toast.offsetWidth;
       toast.style.animation = '';
       toast.style.opacity = 1;
-      setTimeout(() => {
-        toast.style.opacity = 0;
-      }, 3000);
+      setTimeout(() => { toast.style.opacity = 0; }, 3000);
     }
-    
-    // Loader Göster/Gizle
+
+    /*********************************************************
+     *  5) Loader Göster/Gizle
+     *********************************************************/
     function showLoader(show) {
-      const loader = document.getElementById('loader');
-      loader.style.display = show ? 'block' : 'none';
+      document.getElementById('loader').style.display = show ? 'block' : 'none';
     }
-    
-    // Firma Toplamlarını Güncelleme
+
+    /*********************************************************
+     *  6) Firma Toplamlarını Güncelleme
+     *********************************************************/
     function updateFirmTotals(firmName, amount, currency) {
       let firmTotals = JSON.parse(localStorage.getItem('firmTotals')) || {};
       const key = `${firmName}-${currency}`;
       firmTotals[key] = (firmTotals[key] || 0) + amount;
       localStorage.setItem('firmTotals', JSON.stringify(firmTotals));
     }
-    
-    // Belirli bir firma için tüm para birimi toplamlarını hesapla
+
+    /*********************************************************
+     *  7) Firmanın Parasal Değerini Hesaplama (sadece sıralama için)
+     *********************************************************/
+    function calcFirmValue(firmName) {
+      let totalValue = 0;
+      entries.forEach(entry => {
+        if (entry.firmName === firmName) {
+          const rate = conversionRates[entry.currency] || 1;
+          totalValue += entry.amount * rate;
+        }
+      });
+      return totalValue;
+    }
+
+    /*********************************************************
+     *  8) Belirli firmanın TL, USD, EUR Toplamları (gösterilmeyecek)
+     *********************************************************/
     function getFirmTotals(firmName) {
       let totals = { TL: 0, USD: 0, EUR: 0 };
       entries.forEach(entry => {
@@ -657,8 +740,10 @@
       });
       return totals;
     }
-    
-    // Toplam Tutarlar Hesaplama
+
+    /*********************************************************
+     *  9) Genel Toplam Tutarları Güncelleme
+     *********************************************************/
     function updateTotalAmounts() {
       let totalUSD = 0, totalTL = 0, totalEUR = 0;
       entries.forEach(entry => {
@@ -670,8 +755,10 @@
       document.getElementById('total-tl').textContent = totalTL.toFixed(2);
       document.getElementById('total-eur').textContent = totalEUR.toFixed(2);
     }
-    
-    // Veri Girişi (Ekle/Düzenle)
+
+    /*********************************************************
+     * 10) Veri Girişi (Ekle/Düzenle)
+     *********************************************************/
     function addData() {
       const firmName = document.getElementById('firm-name').value.trim();
       const description = document.getElementById('work-description').value.trim();
@@ -681,13 +768,12 @@
       const checkboxes = document.querySelectorAll('input[name="islem"]');
       const selectedIslem = [];
       checkboxes.forEach(cb => { if (cb.checked) selectedIslem.push(cb.value); });
-      
+
       if (!firmName || !description || isNaN(amount) || amount <= 0 || !programName) {
         alert('Lütfen tüm alanları geçerli şekilde doldurun.');
         return;
       }
-      
-      // Aynı program koduna izin verme
+
       if (editingIndex === null) {
         if (entries.some(entry => entry.programName.toLowerCase() === programName.toLowerCase())) {
           alert("Aynı program koduna izin verilmiyor.");
@@ -699,7 +785,7 @@
           return;
         }
       }
-      
+
       showLoader(true);
       setTimeout(() => {
         if (editingIndex !== null) {
@@ -740,10 +826,13 @@
         updateTotalAmounts();
         clearForm();
         showLoader(false);
+        renderFirmPerformanceChart();
       }, 1000);
     }
-    
-    // Kayıt Silme
+
+    /*********************************************************
+     * 11) Kayıt Silme
+     *********************************************************/
     function deleteEntry(index) {
       const entry = entries[index];
       entries.splice(index, 1);
@@ -754,9 +843,12 @@
       loadCompanyLastEntry();
       updateTotalAmounts();
       showToast('Kayıt silindi!');
+      renderFirmPerformanceChart();
     }
-    
-    // Kayıt Düzenleme
+
+    /*********************************************************
+     * 12) Kayıt Düzenleme
+     *********************************************************/
     function editEntry(index) {
       editingIndex = index;
       const entry = entries[index];
@@ -769,19 +861,23 @@
       checkboxes.forEach(cb => { cb.checked = entry.islem && entry.islem.includes(cb.value); });
       document.getElementById('submit-button').textContent = 'Güncelle';
     }
-    
-    // Form Temizleme
+
+    /*********************************************************
+     * 13) Form Temizleme
+     *********************************************************/
     function clearForm() {
       document.getElementById('firm-name').value = '';
       document.getElementById('work-description').value = '';
       document.getElementById('amount').value = '';
       document.getElementById('program-name').value = '';
       const checkboxes = document.querySelectorAll('input[name="islem"]');
-      checkboxes.forEach(cb => cb.checked = false);
+      checkboxes.forEach(cb => { cb.checked = false; });
       document.getElementById('submit-button').textContent = 'Veri Girişi';
     }
-    
-    // Tabloya Kayıtları Yükleme
+
+    /*********************************************************
+     * 14) Tabloya Kayıtları Yükleme
+     *********************************************************/
     function loadEntries(filteredData = entries) {
       const tableBody = document.getElementById('work-table-body');
       tableBody.innerHTML = '';
@@ -793,9 +889,9 @@
         const amountCell = row.insertCell();
         const firmTotalCell = row.insertCell();
         const programCell = row.insertCell();
-        const muhCell = row.insertCell(); // Muhasebeye Verildi sütunu
+        const muhCell = row.insertCell();
         const actionsCell = row.insertCell();
-        
+
         dateCell.textContent = entry.date;
         let islemText = '';
         if (entry.islem && entry.islem.length > 0) {
@@ -804,68 +900,71 @@
         descCell.textContent = entry.description + islemText;
         descCell.style.cursor = 'pointer';
         descCell.onclick = () => showJobDetails(entry);
-        
-        firmCell.textContent = entry.firmName;
-        firmCell.classList.add("firm-link");
-        firmCell.onclick = () => showCompanyDetails(entry.firmName);
-        
+
+        // Firma ismine tıklanınca sayfa en üste kaydırılmaz.
+        firmCell.innerHTML = `<span class="firm-link" style="cursor:pointer;" onclick="showCompanyDetails('${entry.firmName}')">
+          ${entry.firmName}${ topFirmNames.includes(entry.firmName) ? '<span class="star-blink">★</span>' : '' }
+        </span>`;
+
         amountCell.textContent = `${entry.amount} ${entry.currency}`;
-        amountCell.style.color = "green";
-        
+        amountCell.style.color = 'green';
+
         const totals = getFirmTotals(entry.firmName);
         firmTotalCell.innerHTML = `<div style="color: green; font-weight: bold;">
           TL: ${totals.TL.toFixed(2)}<br>
           USD: ${totals.USD.toFixed(2)}<br>
           EUR: ${totals.EUR.toFixed(2)}
         </div>`;
-        
+
         programCell.textContent = entry.programName;
-        
-        // Muhasebeye Verildi sütunu
-        const muhCheckbox = document.createElement('input');
-        muhCheckbox.type = "checkbox";
-        muhCheckbox.checked = entry.muhasebeyeVerildi === true;
-        muhCheckbox.addEventListener("change", function() {
-          entry.muhasebeyeVerildi = muhCheckbox.checked;
-          localStorage.setItem("entries", JSON.stringify(entries));
-          updateMuhCell(muhCell, entry);
-        });
-        updateMuhCell(muhCell, entry);
-        
+
+        // Muhasebeye Verildi sütunu: checkbox + geri al butonu
+        updateMuhCell(muhCell, entry, index);
+
         const editBtn = document.createElement('button');
         editBtn.textContent = 'Düzenle';
         editBtn.className = 'edit-btn';
         editBtn.onclick = () => openConfirmation('edit', index);
-        
+
         const deleteBtn = document.createElement('button');
         deleteBtn.textContent = 'Sil';
         deleteBtn.className = 'delete-btn';
         deleteBtn.onclick = () => openConfirmation('delete', index);
-        
+
         actionsCell.appendChild(editBtn);
         actionsCell.appendChild(deleteBtn);
       });
     }
-    
-    // Muhasebe hücresini güncelleyen fonksiyon
-    function updateMuhCell(cell, entry) {
+
+    // Muhasebe Hücresini Güncelleme: index parametresi eklendi (geri alma için)
+    function updateMuhCell(cell, entry, index) {
       if (entry.muhasebeyeVerildi) {
-        cell.innerHTML = "<span style='color:green; font-weight:bold;'>Fatura Edildi &#10003;</span>";
+        cell.innerHTML = "<span style='color:green; font-weight:bold;'>Fatura Edildi &#10003;</span> " +
+                         "<button onclick='undoMuhasebe(" + index + ")'>Geri Al</button>";
       } else {
         cell.innerHTML = "";
         const checkbox = document.createElement('input');
         checkbox.type = "checkbox";
         checkbox.checked = false;
-        checkbox.addEventListener("change", function() {
+        checkbox.addEventListener("change", function () {
           entry.muhasebeyeVerildi = checkbox.checked;
           localStorage.setItem("entries", JSON.stringify(entries));
-          updateMuhCell(cell, entry);
+          updateMuhCell(cell, entry, index);
         });
         cell.appendChild(checkbox);
       }
     }
-    
-    // Firma Listesi Güncelleme
+
+    function undoMuhasebe(index) {
+      entries[index].muhasebeyeVerildi = false;
+      localStorage.setItem("entries", JSON.stringify(entries));
+      loadEntries();
+      showToast("Geri alındı!");
+    }
+
+    /*********************************************************
+     * 15) Firma Listesi
+     *********************************************************/
     function loadFirms() {
       const firmListEl = document.getElementById('firm-list');
       firmListEl.innerHTML = '';
@@ -874,31 +973,32 @@
         const li = document.createElement('li');
         const a = document.createElement('a');
         a.textContent = firm;
-        a.href = "#";
-        a.classList.add("firm-link");
+        a.href = "javascript:void(0)";
+        a.classList.add('firm-link');
         a.onclick = () => showCompanyDetails(firm);
         li.appendChild(a);
         firmListEl.appendChild(li);
       });
     }
-    
+
     function getUniqueFirms() {
       const firms = new Set();
-      entries.forEach(entry => firms.add(entry.firmName));
+      entries.forEach(entry => { firms.add(entry.firmName); });
       return Array.from(firms);
     }
-    
-    // Tarih ve Program Adına Göre Arama Filtreleme
+
+    /*********************************************************
+     * 16) Filtreleme
+     *********************************************************/
     function filterTable() {
       const firmFilterText = document.getElementById('filter-firm').value.toLowerCase();
       const searchStartDate = document.getElementById('search-start-date').value;
       const searchEndDate = document.getElementById('search-end-date').value;
       const searchProgram = document.getElementById('search-program').value.toLowerCase();
-      
+
       const filtered = entries.filter(entry => {
-        if (firmFilterText && !entry.firmName.toLowerCase().includes(firmFilterText)) {
+        if (firmFilterText && !entry.firmName.toLowerCase().includes(firmFilterText))
           return false;
-        }
         const entryDate = parseDate(entry.date);
         if (searchStartDate) {
           const startDate = new Date(searchStartDate);
@@ -908,15 +1008,16 @@
           const endDate = new Date(searchEndDate);
           if (entryDate > endDate) return false;
         }
-        if (searchProgram && !entry.programName.toLowerCase().includes(searchProgram)) {
+        if (searchProgram && !entry.programName.toLowerCase().includes(searchProgram))
           return false;
-        }
         return true;
       });
       loadEntries(filtered);
     }
-    
-    // Sıralama
+
+    /*********************************************************
+     * 17) Sıralama
+     *********************************************************/
     function sortTable() {
       const sortBy = document.getElementById('sort-by').value;
       entries.sort((a, b) => {
@@ -933,19 +1034,20 @@
       localStorage.setItem('entries', JSON.stringify(entries));
       loadEntries();
     }
-    
-    // CSV Dışa Aktarma
+
+    /*********************************************************
+     * 18) CSV Dışa Aktarma
+     *********************************************************/
     function exportToCSV() {
       if (entries.length === 0) {
         alert('Dışa aktarılacak veri yok.');
         return;
       }
       let csvContent = 'data:text/csv;charset=utf-8,';
-      // Başlık satırı (tüm alanlar çift tırnak içinde)
       csvContent += `"Tarih","Yapılan İş","Firma","Fiyat","Para Birimi","Program","Muhasebeye Verildi","Seçilen İşlemler"\n`;
       entries.forEach(entry => {
         const islemList = entry.islem ? entry.islem.join('|') : '';
-        const muh = entry.muhasebeyeVerildi ? "Fatura Edildi" : "";
+        const muh = entry.muhasebeyeVerildi ? 'Fatura Edildi' : '';
         const row = [
           entry.date,
           entry.description,
@@ -956,7 +1058,7 @@
           muh,
           islemList
         ];
-        csvContent += row.map(field => `"${field}"`).join(",") + "\n";
+        csvContent += row.map(field => `"${field}"`).join(',') + '\n';
       });
       const encodedUri = encodeURI(csvContent);
       const link = document.createElement('a');
@@ -966,8 +1068,10 @@
       link.click();
       document.body.removeChild(link);
     }
-    
-    // CSV Satırını Parçalamak için Sağlam Fonksiyon (CSV Parser)
+
+    /*********************************************************
+     * 19) CSV Parser ve Yükleme
+     *********************************************************/
     function parseCSVLine(line) {
       const result = [];
       let curVal = "";
@@ -976,7 +1080,6 @@
         const char = line[i];
         if (inQuotes) {
           if (char === '"') {
-            // Eğer çift tırnak ise kaçış işlemi
             if (i + 1 < line.length && line[i + 1] === '"') {
               curVal += '"';
               i++;
@@ -1000,8 +1103,7 @@
       result.push(curVal);
       return result;
     }
-    
-    // CSV Yükleme
+
     function importCSV(event) {
       const file = event.target.files[0];
       if (!file) return;
@@ -1010,7 +1112,6 @@
         const text = e.target.result;
         const lines = text.trim().split('\n');
         const newEntries = [];
-        // İlk satır başlık olduğu için atlanıyor.
         for (let i = 1; i < lines.length; i++) {
           const cols = parseCSVLine(lines[i]);
           if (cols.length < 8) continue;
@@ -1024,7 +1125,7 @@
             currency: currency.trim(),
             programName: programName.trim(),
             islem: parsedIslem,
-            muhasebeyeVerildi: muh.trim().toLowerCase() === "fatura edildi"
+            muhasebeyeVerildi: muh.trim().toLowerCase() === 'fatura edildi'
           });
         }
         entries = newEntries;
@@ -1034,11 +1135,14 @@
         loadCompanyLastEntry();
         updateTotalAmounts();
         showToast('CSV başarıyla yüklendi!');
-      }
+        renderFirmPerformanceChart();
+      };
       reader.readAsText(file);
     }
-    
-    // Verileri Temizleme (PIN Doğrulaması)
+
+    /*********************************************************
+     * 20) Verileri Temizleme (PIN Doğrulaması)
+     *********************************************************/
     function verifyPIN() {
       const pin = prompt('Verileri temizlemek için PIN giriniz:');
       if (pin === '1234') {
@@ -1050,26 +1154,29 @@
         loadCompanyLastEntry();
         updateTotalAmounts();
         showToast('Veriler temizlendi!');
+        renderFirmPerformanceChart();
       } else {
         alert('Yanlış PIN!');
       }
     }
-    
-    // Firma Son Giriş Tarihini Getirme
+
+    /*********************************************************
+     * 21) Firma Son Giriş Tarihi
+     *********************************************************/
     function getLatestEntryDate(firmName) {
       let latest = null;
       entries.forEach(entry => {
         if (entry.firmName === firmName) {
           const entryDate = parseDate(entry.date);
-          if (!latest || entryDate > latest) {
-            latest = entryDate;
-          }
+          if (!latest || entryDate > latest) latest = entryDate;
         }
       });
       return latest;
     }
-    
-    // Firmaların Son Veri Girişlerini Yükleme
+
+    /*********************************************************
+     * 22) Firmaların Son Veri Girişi
+     *********************************************************/
     function loadCompanyLastEntry() {
       const container = document.getElementById('company-last-entry');
       container.innerHTML = '';
@@ -1095,8 +1202,8 @@
         const tdFirm = document.createElement('td');
         const firmLink = document.createElement('a');
         firmLink.textContent = firm;
-        firmLink.href = "#";
-        firmLink.classList.add("firm-link");
+        firmLink.href = "javascript:void(0)";
+        firmLink.classList.add('firm-link');
         firmLink.onclick = () => showCompanyDetails(firm);
         tdFirm.appendChild(firmLink);
         const tdLastEntry = document.createElement('td');
@@ -1109,8 +1216,10 @@
       table.appendChild(tbody);
       container.appendChild(table);
     }
-    
-    // Firma Detayları Modalı
+
+    /*********************************************************
+     * 23) Firma Detayları Modalı
+     *********************************************************/
     function showCompanyDetails(firmName) {
       const firmEntries = entries.filter(entry => entry.firmName === firmName);
       if (firmEntries.length === 0) return;
@@ -1125,7 +1234,7 @@
       const monthlyData = {};
       firmEntries.forEach(entry => {
         const date = parseDate(entry.date);
-        const monthYear = `${date.getFullYear()}-${(date.getMonth()+1).toString().padStart(2, '0')}`;
+        const monthYear = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}`;
         if (!monthlyData[monthYear]) monthlyData[monthYear] = 0;
         monthlyData[monthYear]++;
       });
@@ -1138,7 +1247,9 @@
           EUR: ${totalEUR.toFixed(2)}
         </div>
         <p><strong>Son Veri Girişi:</strong> ${latestDateStr}</p>
-        <p><strong>Veri Girişi Yapılmadığı Süre:</strong> ${latestDate ? Math.floor((new Date() - latestDate) / (1000 * 60 * 60 * 24)) : '0'} gün</p>
+        <p><strong>Veri Girişi Yapılmadığı Süre:</strong> ${
+          latestDate ? Math.floor((new Date() - latestDate) / (1000 * 60 * 60 * 24)) : '0'
+        } gün</p>
         <h4>Aylara Göre Veri Girişi</h4>
         <table>
           <thead>
@@ -1153,12 +1264,14 @@
         </table>`;
       document.getElementById('company-details-modal').style.display = 'block';
     }
-    
+
     function closeCompanyDetails() {
       document.getElementById('company-details-modal').style.display = 'none';
     }
-    
-    // İş Detayları Modalı
+
+    /*********************************************************
+     * 24) İş Detayları Modalı
+     *********************************************************/
     function showJobDetails(entry) {
       const modal = document.getElementById('job-details-modal');
       const content = document.getElementById('job-details-content');
@@ -1170,49 +1283,152 @@
         <p><strong>Tarih:</strong> ${entry.date}</p>
         <p><strong>Açıklama:</strong> ${entry.description}</p>
         <p><strong>Seçili Kutucuklar:</strong> ${islemText}</p>`;
-      document.getElementById('job-details-modal').style.display = 'block';
+      modal.style.display = 'block';
     }
-    
+
     function closeJobDetails() {
       document.getElementById('job-details-modal').style.display = 'none';
     }
-    
-    // Onay Modalı İşlemleri
+
+    /*********************************************************
+     * 25) Onay Modalı İşlemleri
+     *********************************************************/
     function openConfirmation(action, index) {
       pendingAction = action;
       pendingIndex = index;
       document.getElementById('confirmation-modal').style.display = 'flex';
     }
-    
+
     document.getElementById('confirm-yes').addEventListener('click', function() {
       if (pendingAction === 'delete') {
         deleteEntry(pendingIndex);
-        showToast('Kayıt silindi!');
       } else if (pendingAction === 'edit') {
         editEntry(pendingIndex);
         showToast('Düzenleme moduna alındı!');
       }
       closeConfirmation();
     });
-    
+
     document.getElementById('confirm-no').addEventListener('click', function() {
       showToast('İşlem iptal edildi!');
       closeConfirmation();
     });
-    
+
     function closeConfirmation() {
       pendingAction = null;
       pendingIndex = null;
       document.getElementById('confirmation-modal').style.display = 'none';
     }
-    
-    // Sayfa Yüklendiğinde Verileri Yükle
+
+    /*********************************************************
+     * 26) Grafik Altındaki Firma Kutucuklarını Oluşturma
+     *      (Sadece firma adını ve, eğer en yüksekse yıldız göster, sayısal veriler gösterilmez)
+     *********************************************************/
+    let topFirmNames = []; // En yüksek parasal değere sahip firmalar
+
+    function renderPerFirmCurrencyTotals(sortedFirms) {
+      const container = document.getElementById('currency-totals');
+      container.innerHTML = '';
+      if (sortedFirms.length === 0) return;
+
+      // En yüksek değeri bulalım
+      const maxValue = sortedFirms[0][1];
+      topFirmNames = []; // Sıfırlıyoruz
+
+      sortedFirms.forEach(([firm, value]) => {
+        let starHTML = '';
+        if (value === maxValue) {
+          starHTML = '<span class="star-blink">★</span>';
+          topFirmNames.push(firm);
+        }
+        container.innerHTML += `
+          <div class="currency-box">
+            ${firm} ${starHTML}
+          </div>
+        `;
+      });
+    }
+
+    /*********************************************************
+     * 27) Firmalara Göre İş Performansı Grafiği (Chart.js)
+     *      - Toplam parasal değere göre (hesaplama arka planda, görünmez)
+     *      - Tooltip devre dışı
+     *********************************************************/
+    function renderFirmPerformanceChart() {
+      // Her firmaya ait parasal değeri (TL cinsinden) hesapla
+      const firmValues = {};
+      const firms = getUniqueFirms();
+      firms.forEach(firm => {
+        firmValues[firm] = calcFirmValue(firm);
+      });
+      // [ [firma, TLdeger], [firma, TLdeger], ... ] büyükten küçüğe
+      let sortedFirms = Object.entries(firmValues).sort((a, b) => b[1] - a[1]);
+      const labels = sortedFirms.map(item => item[0]);
+      const dataValues = sortedFirms.map(item => item[1]);
+      // Renkler: en yüksek firma için farklı renk, diğerleri mavi
+      const colors = sortedFirms.map((item, index) =>
+        index === 0 ? 'rgba(255, 99, 132, 0.8)' : 'rgba(54, 162, 235, 0.8)'
+      );
+
+      // Dinamik genişlik ayarı
+      const canvas = document.getElementById('firm-performance-chart');
+      canvas.width = Math.max(600, labels.length * 80);
+      const ctx = canvas.getContext('2d');
+
+      if (window.firmPerformanceChart) {
+        window.firmPerformanceChart.destroy();
+      }
+
+      window.firmPerformanceChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'Performans',
+            data: dataValues,
+            backgroundColor: colors,
+            borderColor: colors.map(color => color.replace('0.8', '1')),
+            borderWidth: 1
+          }]
+        },
+        options: {
+          plugins: {
+            tooltip: { enabled: false },
+            legend: { display: false },
+            title: {
+              display: true,
+              text: 'Firmalara Göre İş Performansı'
+            }
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              ticks: { precision: 0 }
+            }
+          }
+        }
+      });
+
+      // Grafik altındaki firma kutucuklarını oluştur
+      renderPerFirmCurrencyTotals(sortedFirms);
+
+      // Tabloyu güncelle (yıldızların görünmesi için)
+      loadEntries();
+    }
+
+    /*********************************************************
+     * 28) Sayfa Yüklendiğinde
+     *********************************************************/
     window.onload = function() {
       loadEntries();
       loadFirms();
       loadCompanyLastEntry();
       updateTotalAmounts();
+      renderFirmPerformanceChart();
     };
   </script>
+
+  <!-- Chart.js Kütüphanesi -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </body>
 </html>
